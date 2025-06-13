@@ -13,12 +13,24 @@ import {
   Box,
   SimpleGrid,
   ThemeIcon,
-  useMantineColorScheme
+  useMantineColorScheme,
+  Loader,
+  Alert
 } from '@mantine/core'
-import { IconTrendingUp, IconChartLine, IconCurrencyDollar, IconBrain, IconArrowRight, IconShield, IconClock, IconUsers } from '@tabler/icons-react'
+import { IconTrendingUp, IconChartLine, IconCurrencyDollar, IconBrain, IconArrowRight, IconShield, IconClock, IconUsers, IconAlertCircle } from '@tabler/icons-react'
+import { useDataStatus, useApiHealth } from '../../hooks/useApi'
+import { useEffect, useState } from 'react'
 
 export default function Home() {
   const { colorScheme } = useMantineColorScheme()
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+  
+  const { status, loading: statusLoading } = useDataStatus()
+  const { health, loading: healthLoading } = useApiHealth()
   
   return (
     <>
@@ -107,18 +119,34 @@ export default function Home() {
                 {/* Stats */}
                 <Group gap="xl" mt="xl">
                   <div>
-                    <Title order={2} mb={4} style={{ color: '#FFC300' }}>500+</Title>
+                    <Title order={2} mb={4} style={{ color: '#FFC300' }}>
+                      {!mounted || statusLoading ? <Loader size="sm" color="#FFC300" /> : (status?.stocks_count || '500+')}
+                    </Title>
                     <Text size="sm" c="dimmed">Takip Edilen Hisse</Text>
                   </div>
                   <div>
-                    <Title order={2} mb={4} style={{ color: '#FFC300' }}>24/7</Title>
+                    <Title order={2} mb={4} style={{ color: '#FFC300' }}>
+                      {healthLoading ? <Loader size="sm" color="#FFC300" /> : (health?.status === 'healthy' ? '24/7' : 'Offline')}
+                    </Title>
                     <Text size="sm" c="dimmed">Canlı Veri Akışı</Text>
                   </div>
                   <div>
                     <Title order={2} mb={4} style={{ color: '#FFC300' }}>AI</Title>
                     <Text size="sm" c="dimmed">Destekli Analiz</Text>
-                  </div>
+        </div>
                 </Group>
+                
+                {/* API Status Alert */}
+                {mounted && !healthLoading && health?.status !== 'healthy' && (
+                  <Alert 
+                    icon={<IconAlertCircle size={16} />} 
+                    title="Backend Bağlantısı" 
+                    color="yellow"
+                    mt="md"
+                  >
+                    Backend servisi şu anda çevrimdışı. Lütfen backend&apos;i başlatın.
+                  </Alert>
+                )}
               </Stack>
             </Grid.Col>
             
@@ -332,7 +360,7 @@ export default function Home() {
                         Kapsamlı
                       </Text>
                       <Text size="sm" c="dimmed">Tüm piyasa verileri</Text>
-                    </div>
+    </div>
                   </Group>
                 </SimpleGrid>
               </Stack>

@@ -6,7 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup:env": "node setup.js",
+    "backend:install": "cd backend && pip install -r requirements.txt",
+    "backend:dev": "cd backend && python run.py",
+    "backend:start": "cd backend && python main.py",
+    "dev:all": "concurrently \"npm run dev\" \"npm run backend:dev\"",
+    "install:all": "npm install && npm run backend:install",
+    "setup": "npm run setup:env && npm run install:all"
   },
   "dependencies": {
     "@mantine/charts": "^7.15.0",
@@ -28,6 +35,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.1.2",
     "eslint": "^9",
     "eslint-config-next": "15.3.3",
     "postcss": "^8.4.32",

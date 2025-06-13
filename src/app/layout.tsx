@@ -21,10 +21,10 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <head>
-        <ColorSchemeScript defaultColorScheme="auto" />
+        <ColorSchemeScript />
       </head>
       <body className={inter.className}>
-        <MantineProvider>
+        <MantineProvider defaultColorScheme="auto">
           <Navigation>
             {children}
           </Navigation>
